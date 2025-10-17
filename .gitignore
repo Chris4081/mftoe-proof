@@ -1,0 +1,87 @@
+# ============================================================
+# 🧠 MFToE-Proof — .gitignore
+# Author: Christof Krieg (2025)
+# Purpose: Ignore temporary, local, and generated files
+# ============================================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+*.egg-info/
+*.egg
+*.pkl
+*.log
+*.tmp
+*.bak
+*.swp
+*.ipynb_checkpoints/
+
+# --- Virtual environment ---
+.venv/
+env/
+venv/
+ENV/
+
+# --- macOS specific ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# --- System & IDEs ---
+.vscode/
+.idea/
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+# --- Build / Packaging ---
+build/
+dist/
+*.spec
+
+# --- Outputs / Runs ---
+runs/*.csv
+runs/*.png
+runs/*.json
+runs/*.pdf
+runs/*.txt
+runs/*.npy
+runs/*.npz
+
+# --- Large data / intermediates ---
+data/**/*.npy
+data/**/*.npz
+data/**/*.fits
+data/**/*.dat
+data/**/*.txt
+!data/desi_dr2/bao_summary.csv
+!data/desi_dr2/iminuit/base/desi-bao-all/bestfit.minimum
+
+# --- Documentation ---
+docs/*.aux
+docs/*.log
+docs/*.out
+docs/*.toc
+docs/*.synctex.gz
+docs/*.bbl
+docs/*.blg
+docs/*.pdf
+
+# --- Local configs ---
+config.json
+secrets.json
+local_settings.py
+
+# --- Temporary files ---
+tmp/
+temp/
+*.cache
+*.bak
+*.old
+*.zip
+*.tar
+*.tar.gz
