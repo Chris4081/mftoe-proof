@@ -1,0 +1,8 @@
+Dark Energy Spectroscopic Instrument (DESI)
+Data License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Use of DESI data requires inclusion of the citation and acknowledgment text
+provided on the DESI Data License and Acknowledgments pages:
+https://data.desi.lbl.gov/doc/releases/
+
+© DESI Collaboration, 2025.

@@ -1,0 +1,35 @@
+ -log(Like) = 12.018651622763102
+  chi-sq    = 24.037303245526203
+
+   24  1.015478578e+02   hrdrag                                                                              hr_\mathrm{d}
+   25  2.971778718e-01   omm                                                                                 omm
+
+    1  3.036             logA                                                                                \ln(10^{10} A_\mathrm{s})
+    3  0.9649            ns                                                                                  n_\mathrm{s}
+    4  67.36             H0                                                                                  H_0
+    5  0.02237           ombh2                                                                               \Omega_\mathrm{b} h^2
+    7  0.0544            tau                                                                                 \tau_\mathrm{reio}
+    8  0.06              mnu                                                                                 \sum m_\nu
+    9  3.044             nnu                                                                                 N_\mathrm{eff}
+   10  0.0               omk                                                                                 \Omega_\mathrm{k}
+    2  2.082178928e-09   As                                                                                  A_\mathrm{s}
+   18  2.082178928e+00   A                                                                                   10^9 A_\mathrm{s}
+   19  1.867526648e+00   clamp                                                                               10^9 A_\mathrm{s} e^{-2\tau}
+
+    2  2.082178928e-09   As                                                                                  A_\mathrm{s}
+    6  1.118263926e-01   omch2                                                                               \Omega_\mathrm{c} h^2
+   11  2.971793595e-01   omegam                                                                              \Omega_\mathrm{m}
+   12  1.348412592e-01   omegamh2                                                                            \Omega_\mathrm{m} h^2
+   13  7.027410192e-01   omegal                                                                              \Omega_\Lambda
+   14  7.541540263e+00   zrei                                                                                z_\mathrm{reio}
+   15  2.453954140e-01   YHe                                                                                 Y_\mathrm{P}
+   16  2.467253971e-01   Y_p                                                                                 Y_P^\mathrm{BBN}
+   17  2.585578825e+00   DHBBN                                                                               10^5 \mathrm{D}/\mathrm{H}
+   18  2.082178928e+00   A                                                                                   10^9 A_\mathrm{s}
+   19  1.867526648e+00   clamp                                                                               10^9 A_\mathrm{s} e^{-2\tau}
+   20  1.402619308e+01   age                                                                                 \mathrm{Age}/\mathrm{Gyr}
+   21  1.507539456e+02   rdrag                                                                               r_\mathrm{d}
+   22  1.059337509e+03   zdrag                                                                               z_\mathrm{d}
+   23  1.015478578e+04   H0rdrag                                                                             H_0 r_\mathrm{d}
+   26  1.028229877e+01   chi2__BAO                                                                           \chi^2_\mathrm{BAO}
+   27  1.028229877e+01   chi2__desi_y3_cosmo_bindings.cobaya_likelihoods.bao_likelihoods_v1p2.desi_bao_all   \chi^2_{\rm desi\ y3\ cosmo\ bindings.cobaya\ likelihoods.bao\ likelihoods\ v1p2.desi\ bao\ all}

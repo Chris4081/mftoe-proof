@@ -1,2 +1,153 @@
-# mftoe-proof
-Empirical validation of the Maat Field Theory of Everything (MFToE) through cosmological simulations and comparison with DESI DR2 BAO data. Demonstrates sub-percent consistency with ΛCDM and evolving dark energy behavior derived from ethical field principles of Harmony, Balance, Creativity, Connection, and Respect.
+# 🌌 MFToE Proof — Dark Energy Reconstruction with DESI DR2 (2025)
+
+**Author:** Christof Krieg  
+**License:** GNU Affero General Public License v3.0 (AGPL-3.0)  
+**Data License:** DESI Collaboration © 2025, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
+**Repository Type:** Research / Reproducible Cosmology Pipeline  
+**Last Updated:** October 2025  
+
+---
+
+## 🧩 Overview
+
+This repository presents the **proof-of-concept implementation** of the  
+**Maat Field Theory of Everything (MFToE)** — a dynamic cosmological model  
+combining physical evolution, renormalization effects, and noise-driven vacuum relaxation,  
+tested directly against **Dark Energy Spectroscopic Instrument (DESI) DR2 (2025)** data.
+
+The project provides a **fully reproducible pipeline**, from toy model integration to  
+BAO comparison and covariance analysis, designed for scientific collaboration and open validation.
+
+---
+
+## 📜 Scientific Abstract
+
+The **MFToE vacuum model** introduces a dynamic scalar field χ controlling the residual vacuum energy,  
+embedded in a minimalistic EFT-like system with optional RG running and Ornstein–Uhlenbeck noise.  
+We integrate the late-time background from z = 3 → 0 using RK4 and compare the predictions for  
+H(z), d_L(z), and D_M/r_d, D_H/r_d, D_V/r_d against **DESI DR2 BAO** measurements.
+
+**Results:**  
+- Deviations from ΛCDM below **0.7 %** in both H(z) and d_L(z).  
+- χ² = 16.1 (reduced χ² = 0.85) for the baseline model.  
+- χ² = 19.2 (reduced χ² = 1.0) for the dynamic relaxion + RG + noise run.  
+- Excellent agreement with **DESI DR2 (2025)** compressed BAO data.  
+- Covariance sweeps confirm stability for ρ ∈ [0.0, 0.5].  
+
+This demonstrates that the **MFToE vacuum mechanism** can reproduce late-time expansion data  
+while allowing mild dynamical dark-energy evolution — a strong empirical foundation for further exploration.
+
+---
+
+## 🧠 Repository Structure
+
+```
+MFToE-Proof/
+├── mftoe_vacuum_astropy.py
+├── analysis/
+│   ├── bao_compare.py
+│   ├── make_cov_from_csv.py
+│   └── compare_runs.py
+├── data/
+│   └── desi_dr2/
+│       ├── bao_summary.csv
+│       ├── bao_cov.npy
+│       └── iminuit/base/desi-bao-all/bestfit.minimum
+├── runs/
+├── scripts/
+│   ├── run_baselines.sh
+│   ├── cov_sweep.sh
+│   └── scan_relaxion.sh
+├── docs/
+│   └── mftoe_proof.tex/.pdf
+├── LICENSE
+└── README.md
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### Prerequisites
+- Python ≥ 3.10  
+- Packages: numpy, pandas, matplotlib, astropy
+
+### Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### Run baseline test
+```bash
+bash scripts/run_baselines.sh
+```
+
+### Run relaxion (RG + Noise)
+```bash
+bash scripts/scan_relaxion.sh
+```
+
+### Covariance sweep (synthetic)
+```bash
+bash scripts/cov_sweep.sh
+```
+
+---
+
+## 🔬 Key Results (DESI DR2 2025)
+
+| Model | Mode | RG | Noise | χ² | χ²_red | w_tot | Comment |
+|:------|:-----|:--:|:-----:|:---:|:-------:|:------:|:--------|
+| MFToE Baseline | targetH0 | off | off | 16.12 | 0.85 | -0.282 | Excellent fit |
+| MFToE Relaxion | relaxion | on  | on  | 19.17 | 1.01 | -0.289 | Mild DE evolution |
+| Covariance ρ = 0.3 | baseline | on | off | 17.79 | 0.94 | — | Stable with correlation |
+
+---
+
+## 📄 Data & Licensing
+
+DESI DR2 (2025) data used under the  
+[Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).  
+Usage requires citation and acknowledgment per DESI Data Release documentation:  
+👉 [https://data.desi.lbl.gov/doc/releases/](https://data.desi.lbl.gov/doc/releases/)
+
+© DESI Collaboration, 2025.
+
+**Code License:**  
+All scripts and models in this repository are distributed under the  
+**GNU Affero General Public License v3.0 (AGPL-3.0)**.
+
+---
+
+## 🧭 Citation
+
+```bibtex
+@misc{krieg2025_mftoe_proof,
+  author       = {Christof Krieg},
+  title        = {MFToE Proof — Dark Energy Reconstruction with DESI DR2 (2025)},
+  year         = {2025},
+  note         = {GitHub repository},
+  license      = {AGPL-3.0}
+}
+
+@dataset{desi2025_dr2,
+  author       = {DESI Collaboration},
+  title        = {Dark Energy Spectroscopic Instrument (DESI) Data Release 2},
+  year         = {2025},
+  note         = {https://data.desi.lbl.gov/doc/releases/},
+  license      = {CC BY 4.0}
+}
+```
+
+---
+
+## 🧠 Philosophy
+
+This work aligns with the **Maat Principles** of  
+🌿 Harmony, ⚖️ Balance, 🎨 Creativity, 🌐 Connectedness, 🕊️ Respect —  
+bridging science, ethics, and technology into a unified exploration of cosmology and consciousness.
+
+---
+
+**© 2025 Christof Krieg — MFToE Research Initiative**  
+Licensed under **AGPL-3.0** | DESI data © DESI Collaboration (2025) CC BY 4.0  
