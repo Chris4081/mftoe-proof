@@ -72,6 +72,25 @@ MFToE-Proof/
 - Python ≥ 3.10  
 - Packages: numpy, pandas, matplotlib, astropy
 
+##  📥 Cloning the Repository
+
+📥 **Clone and Run**
+
+To get started:
+
+```git clone https://github.com/Chris4081/mftoe-proof.git  
+cd mftoe-proof
+
+Create a virtual environment (recommended):
+
+python3 -m venv .venv  
+source .venv/bin/activate  
+pip install -r requirements.txt
+
+Run the baseline simulation:
+
+bash scripts/run_baselines.sh
+```
 ### Install dependencies
 ```bash
 pip install -r requirements.txt
@@ -91,6 +110,8 @@ bash scripts/scan_relaxion.sh
 ```bash
 bash scripts/cov_sweep.sh
 ```
+
+
 
 ---
 
