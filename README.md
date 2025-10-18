@@ -1,10 +1,9 @@
-# 🌌 MFToE Proof — Dark Energy Reconstruction with DESI DR2 (2025)
-
-**Author:** Christof Krieg 
-**Contact** Christof.Krieg@Outlook.com
-**License:** GNU Affero General Public License v3.0 (AGPL-3.0)  
-**Data License:** DESI Collaboration © 2025, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
-**Repository Type:** Research / Reproducible Cosmology Pipeline  
+# 🌌 MFToE Proof — Dark Energy Reconstruction with DESI DR2 (2025)  
+**Author:** Christof Krieg <br>
+**Contact:** Christof.Krieg@Outlook.com <br>
+**License:** GNU Affero General Public License v3.0 (AGPL-3.0) <br>
+**Data License:** DESI Collaboration © 2025, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) <br>
+**Repository Type:** Research / Reproducible Cosmology Pipeline <br>
 **Last Updated:** October 2025  
 
 ---
