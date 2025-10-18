@@ -140,6 +140,7 @@ All scripts and models in this repository are distributed under the
 **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
 ---
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17383354.svg)](https://doi.org/10.5281/zenodo.17383354)
 
 ## 🧭 Citation
 
