@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+title: "MFToE Proof — Dark Energy Reconstruction with DESI DR2 (2025)"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: "Krieg"
+    given-names: "Christof"
+    email: "Christof.Krieg@Outlook.com"
+repository-code: "https://github.com/Chris4081/mftoe-proof"
+url: "https://github.com/Chris4081/mftoe-proof"
+abstract: >
+  Proof-of-concept implementation of the Maat Field Theory of Everything (MFToE)
+  with a reproducible cosmology pipeline. Late-time background integration and
+  BAO comparison to DESI DR2 (2025), plus a joint-fit scaffold (BAO+SNIa+CMB r_d).
+  Includes covariance sweeps, parameter scans, residual plots, and JSON outputs.
+  This project makes use of publicly available data from the DESI (Dark Energy Spectroscopic Instrument)
+  Data Release 2 (DESI DR2), released under the Creative Commons Attribution 4.0 International License (CC BY 4.0).
+keywords:
+  - cosmology
+  - dark energy
+  - BAO
+  - DESI
+  - reproducible research
+  - MFToE
+license: AGPL-3.0
+version: "1.1.0"
+doi: "10.5281/zenodo.17383354"
+date-released: "2025-10-17"
+preferred-citation:
+  type: article
+  title: "MFToE Proof — Dark Energy Reconstruction with DESI DR2 (2025)"
+  authors:
+    - family-names: "Krieg"
+      given-names: "Christof"
+  year: 2025
+  notes: "GitHub repository; Zenodo archival record."
+references:
+  - type: dataset
+    title: "DESI Data Release 2 (DR2)"
+    authors:
+      - name: "DESI Collaboration"
+    year: 2024
+    doi: "10.5281/zenodo.11019438"
+    url: "https://data.desi.lbl.gov/doc/releases/dr2/"
+    license: "CC BY 4.0"
+    notes: "Used for BAO summary data and cosmological best-fit values."

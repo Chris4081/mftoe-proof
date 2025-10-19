@@ -1,0 +1,163 @@
+{
+  "report": {
+    "chi2_bao": 16.12163805526988,
+    "N_bao": 19,
+    "chi2_snia": 29.589697393893456,
+    "N_snia": 6,
+    "SN_Mstar_profiled_mag": -0.00315314093096729,
+    "chi2_gw": 0.0,
+    "N_gw": 0,
+    "chi2_cmb_prior": 0.0021777777777720483,
+    "chi2_total": 45.71351322694111,
+    "N_total": 26,
+    "reduced_chi2": 2.2856756613470557,
+    "H0phys": 67.36,
+    "rd_used": 150.754,
+    "inputs": {
+      "model_csv": "runs/mftoe_vacuum_astropy.csv",
+      "bao_csv": "data/desi_dr2/bao_summary.csv",
+      "bao_cov": null,
+      "snia_csv": "data/snia/pantheonplus_summary.csv",
+      "snia_cov": null,
+      "gw_csv": null,
+      "gw_cov": null,
+      "cmb_rd": 150.74,
+      "cmb_rd_sigma": 0.3
+    }
+  },
+  "bao_vector": [
+    {
+      "z": 0.295,
+      "obs": "DV_over_rd",
+      "data": 7.942,
+      "err": 0.075,
+      "model": 7.91143803830123
+    },
+    {
+      "z": 0.51,
+      "obs": "DM_over_rd",
+      "data": 13.588,
+      "err": 0.167,
+      "model": 13.271325944730673
+    },
+    {
+      "z": 0.51,
+      "obs": "DH_over_rd",
+      "data": 21.863,
+      "err": 0.425,
+      "model": 22.489200217640416
+    },
+    {
+      "z": 0.51,
+      "obs": "DV_over_rd",
+      "data": 12.72,
+      "err": 0.099,
+      "model": 12.64127675457441
+    },
+    {
+      "z": 0.706,
+      "obs": "DM_over_rd",
+      "data": 17.351,
+      "err": 0.177,
+      "model": 17.432464538985897
+    },
+    {
+      "z": 0.706,
+      "obs": "DH_over_rd",
+      "data": 19.455,
+      "err": 0.33,
+      "model": 20.01500350424344
+    },
+    {
+      "z": 0.706,
+      "obs": "DV_over_rd",
+      "data": 16.05,
+      "err": 0.11,
+      "model": 16.253964896196734
+    },
+    {
+      "z": 0.934,
+      "obs": "DM_over_rd",
+      "data": 21.576,
+      "err": 0.152,
+      "model": 21.70040196457027
+    },
+    {
+      "z": 0.934,
+      "obs": "DH_over_rd",
+      "data": 17.641,
+      "err": 0.193,
+      "model": 17.487972031190726
+    },
+    {
+      "z": 0.934,
+      "obs": "DV_over_rd",
+      "data": 19.721,
+      "err": 0.091,
+      "model": 19.739703622738062
+    },
+    {
+      "z": 1.321,
+      "obs": "DM_over_rd",
+      "data": 27.601,
+      "err": 0.318,
+      "model": 27.770389747569123
+    },
+    {
+      "z": 1.321,
+      "obs": "DH_over_rd",
+      "data": 14.176,
+      "err": 0.221,
+      "model": 14.048954579913353
+    },
+    {
+      "z": 1.321,
+      "obs": "DV_over_rd",
+      "data": 24.252,
+      "err": 0.174,
+      "model": 24.27934270866062
+    },
+    {
+      "z": 1.484,
+      "obs": "DM_over_rd",
+      "data": 30.512,
+      "err": 0.76,
+      "model": 29.962988067419122
+    },
+    {
+      "z": 1.484,
+      "obs": "DH_over_rd",
+      "data": 12.817,
+      "err": 0.516,
+      "model": 12.878522776800974
+    },
+    {
+      "z": 1.484,
+      "obs": "DV_over_rd",
+      "data": 26.055,
+      "err": 0.398,
+      "model": 25.792299588164287
+    },
+    {
+      "z": 2.33,
+      "obs": "DM_over_rd",
+      "data": 38.988,
+      "err": 0.531,
+      "model": 38.88340682388555
+    },
+    {
+      "z": 2.33,
+      "obs": "DH_over_rd",
+      "data": 8.632,
+      "err": 0.101,
+      "model": 8.640609640402417
+    },
+    {
+      "z": 2.33,
+      "obs": "DV_over_rd",
+      "data": 31.267,
+      "err": 0.256,
+      "model": 31.2231207252893
+    }
+  ]
+}

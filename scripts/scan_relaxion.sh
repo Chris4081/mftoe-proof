@@ -5,7 +5,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 cd "$repo_root"
 mkdir -p runs
 
-# Simple grid
+# Grid
 gammas=(0.05 0.10 0.20)
 sigmas=(1e-5 1e-4)
 
@@ -15,12 +15,14 @@ for g in "${gammas[@]}"; do
   for s in "${sigmas[@]}"; do
     tag="relaxion_g${g}_s${s}"
     echo "→ Running ${tag}…"
+
     # temporäres Param-JSON (nur Overrides)
     tmpjson="$(mktemp)"
     cat > "${tmpjson}" <<JSON
 {"gamma": ${g}, "sigma_noise": ${s}}
 JSON
 
+    # 1) MFToE-Integration
     python3 mftoe_vacuum_astropy.py \
       --mode relaxion --rg on --noise on \
       --astropy on \
@@ -28,24 +30,36 @@ JSON
       --params "${tmpjson}" \
       --out "runs/${tag}"
 
-    # BAO compare (no cov for speed)
-    out_json="runs/bao_${tag}.json"
-    python3 analysis/bao_compare.py \
+    rm -f "${tmpjson}"
+
+    # 2) Joint-Fit (BAO + SNIa + CMB r_d prior); robustere SN-Fehler
+    joint_json="runs/${tag}_joint.json"
+    python3 analysis/joint_fit.py \
       --model-csv "runs/${tag}.csv" \
       --bao-csv   data/desi_dr2/bao_summary.csv \
+      --snia-csv  data/snia/pantheonplus_summary.csv \
+      --snia-sigma-int 0.10 --snia-vpec 250 \
       --H0phys 67.36 --rd 150.754 \
-      --export-json \
-      --out "runs/bao_${tag}" >/dev/null
+      --cmb-rd 150.74 --cmb-rd-sigma 0.30 \
+      --n-params 5 \
+      --out "runs/${tag}_joint" \
+      --save-json
 
-    # Pull χ² aus JSON
-    chi2=$(python3 - <<PY
-import json,sys
-d=json.load(open("${out_json}"))
-print(d.get("chi2", "NA"))
+    # 3) χ² aus JOINT-JSON extrahieren (Total)
+    if [[ -f "${joint_json}" ]]; then
+      chi2=$(python3 - <<PY
+import json
+with open("${joint_json}") as f:
+    d = json.load(f)
+print(d["report"]["chi2_total"])
 PY
 )
-    echo "bao,${g},${s},${chi2}" >> runs/scan_relaxion_summary.csv
-    rm -f "${tmpjson}"
+      echo "joint,${g},${s},${chi2}" >> runs/scan_relaxion_summary.csv
+    else
+      echo "❌ Joint JSON fehlt: ${joint_json} — überspringe Eintrag"
+      echo "joint,${g},${s},NA" >> runs/scan_relaxion_summary.csv
+    fi
+
   done
 done
 
