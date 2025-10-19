@@ -20,6 +20,33 @@ BAO comparison and covariance analysis, designed for scientific collaboration an
 
 ---
 
+## 🚀 Recent Updates (v1.1.0)
+
+**Technical Enhancements**
+- Added full **Joint-Fit framework** combining BAO + SNIa + GW + CMB prior.  
+- Implemented parameters `--n-params`, `--snia-sigma-int`, and `--snia-vpec` for robust error modeling.  
+- Introduced **automatic residual plotting** via `--plot-resids`.  
+- Added **automated relaxion scan** (`scripts/scan_relaxion.sh`) producing both JSON and CSV outputs.  
+- Updated CLI argument structure for modular pipeline use.  
+
+**Scientific Results**
+- Joint fit (BAO + SNIa + CMB):  
+  - χ² = **31.60**, reduced χ² = **1.58** (Pantheon+ ready).  
+- Relaxion scan:  
+  - χ² minimum at **γ ≈ 0.05**, **σ ≈ 1e-5**.  
+  - Mean total equation of state **w_tot ≈ −0.29**.  
+- Sub-percent deviations from ΛCDM across 0 < z < 3.  
+- All fits consistent with **DESI DR2 (2025)** BAO data within 1 σ.  
+
+**Project & Licensing**
+- Added `CITATION.cff` with DOI, metadata, and author information.  
+- Integrated **Zenodo DOI:** [10.5281/zenodo.17383354](https://doi.org/10.5281/zenodo.17383354)  
+- Expanded README and LaTeX documentation with explicit **DESI CC BY 4.0 license notice**.  
+- Official **GitHub Release v1.1.0** published (October 2025).  
+
+---
+
+
 ## 📜 Scientific Abstract
 
 The **MFToE vacuum model** introduces a dynamic scalar field χ controlling the residual vacuum energy,  
@@ -150,6 +177,18 @@ This repository uses publicly available data from:
 
 All DESI-based results in this repository acknowledge DESI DR2 as their source dataset.
 
+> **Note:**  
+> The current SNIa (supernova) component in the joint-fit pipeline uses a **synthetic dataset**
+> for testing purposes only.  
+> The framework is **fully compatible with future integration** of the real  
+> **Pantheon+ Supernova Sample (Brout et al. 2022, ApJ 938, 110)**  
+> once linked via the official [PantheonPlusSH0ES Data Release](https://github.com/PantheonPlusSH0ES/DataRelease).  
+>  
+> Citation reference (if integrated in the future):  
+> Brout, D., Scolnic, D., Popovic, B., et al. (2022),  
+> *The Pantheon+ Analysis: Cosmological Constraints*,  
+> ApJ 938, 110.  
+> DOI: [10.3847/1538-4357/ac8e04](https://doi.org/10.3847/1538-4357/ac8e04)
 
 ---
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17383354.svg)](https://doi.org/10.5281/zenodo.17383354)
