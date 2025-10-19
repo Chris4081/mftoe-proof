@@ -139,6 +139,18 @@ Usage requires citation and acknowledgment per DESI Data Release documentation:
 All scripts and models in this repository are distributed under the  
 **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
+## Data sources and licenses
+
+This repository uses publicly available data from:
+
+- **DESI Data Release 2 (DR2)** —  
+  Dark Energy Spectroscopic Instrument Collaboration (2024).  
+  DOI: [10.5281/zenodo.11019438](https://doi.org/10.5281/zenodo.11019438)  
+  Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+All DESI-based results in this repository acknowledge DESI DR2 as their source dataset.
+
+
 ---
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17383354.svg)](https://doi.org/10.5281/zenodo.17383354)
 
@@ -163,6 +175,8 @@ All scripts and models in this repository are distributed under the
 ```
 
 ---
+
+
 
 ## 🧠 Philosophy
 
