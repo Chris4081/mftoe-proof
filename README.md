@@ -18,11 +18,11 @@ tested directly against **Dark Energy Spectroscopic Instrument (DESI) DR2 (2025)
 The project provides a **fully reproducible pipeline**, from toy model integration to  
 BAO comparison and covariance analysis, designed for scientific collaboration and open validation.
 
-# 🌌 **MFToE Proof v1.2.0 — CAMB Integration & Interactive GUI**
+# 🌌 **MFToE Proof v1.2.1 — CAMB Integration & Interactive GUI**
 
 ### 🚀 Overview  
 This release marks a major usability and reproducibility step for the **Maat Field Theory of Everything (MFToE)** proof-of-concept.  
-Version **1.2.0** introduces the **CAMB Boltzmann backend**, a refined **joint-fit consistency model**, and a brand-new **interactive GUI** for streamlined simulation control.
+Version **1.2.1** introduces the **CAMB Boltzmann backend**, a refined **joint-fit consistency model**, and a brand-new **interactive GUI** for streamlined simulation control.
 
 ---
 
