@@ -2,68 +2,89 @@
 # -*- coding: utf-8 -*-
 """
 Joint chi^2: BAO (compressed) + optional SNIa + optional GW + optional CMB r_d prior
-Uses your existing model CSV (z, H_over_H0, dL).
+Uses a model CSV with columns: z, H_over_H0, dL (d_L in dimensionless c/H0 units).
+
+Example:
+  python3 analysis/joint_fit.py \
+    --model-csv runs/mftoe_vacuum_astropy.csv \
+    --bao-csv   data/desi_dr2/bao_summary.csv \
+    --H0phys 67.36 --rd 150.754 \
+    --cmb-rd 150.74 --cmb-rd-sigma 0.30 \
+    --snia-csv  data/snia/pantheonplus_summary.csv \
+    --gw-csv    data/gw/bright_sirens.csv \
+    --out runs/joint_baseline --save-json --plot-resids
 """
 
 import argparse, json, sys, pathlib
-import numpy as np, pandas as pd
+import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
 # --- robust path bootstrap (run as script OR as module) ---
 HERE = pathlib.Path(__file__).resolve().parent          # .../analysis
-ROOT = HERE.parent                                      # .../ (Repo-Root)
+ROOT = HERE.parent                                      # .../ (repo root)
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-# ---------- Inline Helpers ----------
+# Optional rd_engine import (only needed if rd-backend=camb)
+try:
+    from analysis.rd_engine import EarlyParams, rd_camb
+except Exception:
+    try:
+        from rd_engine import EarlyParams, rd_camb
+    except Exception:
+        EarlyParams = None
+        rd_camb = None
+
+# ---------- Constants ----------
 C_KMS = 299_792.458  # km/s
 
+# ---------- Helpers ----------
 def chi2_rd_prior(rd_used, rd_mean, rd_sigma):
-    """Simple Gaussian prior on r_d from CMB (e.g., Planck)."""
+    """Gaussian prior on r_d (e.g. from CMB)."""
+    if rd_mean is None or rd_sigma is None:
+        return 0.0
     if rd_sigma == 0.0:
         return 0.0 if rd_used == rd_mean else np.inf
-    return ((rd_used - rd_mean) / rd_sigma)**2
+    return ((rd_used - rd_mean) / rd_sigma) ** 2
 
 def load_snia_csv(csv_path):
     """Load SNIa CSV: expects columns z, mu, mu_err (distance modulus)."""
     df = pd.read_csv(csv_path)
     need = {"z", "mu", "mu_err"}
-    if not need.issubset(df.columns):
-        raise ValueError(f"SNIa CSV missing {need - set(df.columns)}")
+    missing = need - set(df.columns)
+    if missing:
+        raise ValueError(f"SNIa CSV missing columns: {missing}")
     return df.sort_values("z")
 
 def chi2_snia_profileM(z_snia, mu_snia, mu_err_snia, z_mod, dL_dimless, H0phys,
                        cov_path=None, sigma_int=0.0, vpec_kms=0.0):
     """
-    χ² für SNe mit analytischer Profilierung von 𝓜.
-    Optional: intrinsische Streuung sigma_int (mag) und Peculiar-Velocity-Fehler vpec_kms.
-
-    μ_mod(z) = 5 log10(d_L/Mpc) + 25  (aus dL_dimless * c/H0phys)
+    χ² for SNe Ia with analytic profiling of nuisance 𝓜.
+    μ_mod(z) = 5 log10(d_L/Mpc) + 25;  d_L(Mpc) = dL_dimless * (c/H0phys)
     """
     dL_interp = np.interp(z_snia, z_mod, dL_dimless)
     dL_Mpc = dL_interp * (C_KMS / H0phys)
     mu_mod = 5.0 * np.log10(np.clip(dL_Mpc, 1e-6, None)) + 25.0
 
-    # Fehler kombinieren
     err = np.array(mu_err_snia, float)
 
-    # Peculiar-Velocity in mag: σ_μ,pec = (5/ln 10) * σ_v / (c z)
+    # Peculiar-velocity error (mag): σ_μ,pec = (5/ln10) * σ_v / (c z)
     if vpec_kms and np.any(z_snia > 0):
-        sigma_mu_pec = (5.0/np.log(10.0)) * (vpec_kms / (C_KMS * np.clip(z_snia, 1e-4, None)))
+        sigma_mu_pec = (5.0 / np.log(10.0)) * (vpec_kms / (C_KMS * np.clip(z_snia, 1e-4, None)))
         err = np.sqrt(err**2 + sigma_mu_pec**2)
 
-    # Intrinsische Streuung σ_int (mag)
+    # Intrinsic scatter (mag)
     if sigma_int and sigma_int > 0:
         err = np.sqrt(err**2 + sigma_int**2)
 
-    # 𝓜 profilieren (gewichtetes Mittel der Residuen)
     w = 1.0 / np.clip(err, 1e-12, None)**2
     resid0 = mu_snia - mu_mod
-    M_star = np.sum(w * resid0) / np.sum(w)
-    resid  = resid0 - M_star
+    M_star = float(np.sum(w * resid0) / np.sum(w))
+    resid = resid0 - M_star
 
     if cov_path:
         C = np.load(cov_path)
@@ -72,31 +93,33 @@ def chi2_snia_profileM(z_snia, mu_snia, mu_err_snia, z_mod, dL_dimless, H0phys,
     else:
         chi2 = float(np.sum((resid / np.clip(err, 1e-12, None))**2))
 
-    return chi2, float(M_star), err
+    return chi2, M_star, err
 
 def load_bright_sirens(csv_path):
-    """Load GW CSV: expects z, dL_Mpc, dL_err_Mpc."""
+    """Load GW CSV: expects columns z, dL_Mpc, dL_err_Mpc."""
     df = pd.read_csv(csv_path)
     need = {"z", "dL_Mpc", "dL_err_Mpc"}
-    if not need.issubset(df.columns):
-        raise ValueError(f"GW CSV missing {need - set(df.columns)}")
+    missing = need - set(df.columns)
+    if missing:
+        raise ValueError(f"GW CSV missing columns: {missing}")
     return df.sort_values("z")
 
 def chi2_gw(z_gw, dL_gw_Mpc, dL_gw_err_Mpc, z_mod, dL_dimless, H0phys, cov_path=None):
-    """χ² for GW bright sirens: direct dL comparison."""
-    dL_interp   = np.interp(z_gw, z_mod, dL_dimless)
-    dL_mod_Mpc  = dL_interp * (C_KMS / H0phys)
-    resid       = dL_gw_Mpc - dL_mod_Mpc
+    """χ² for GW bright sirens."""
+    dL_interp = np.interp(z_gw, z_mod, dL_dimless)
+    dL_mod_Mpc = dL_interp * (C_KMS / H0phys)
+    resid = dL_gw_Mpc - dL_mod_Mpc
 
     if cov_path:
         C = np.load(cov_path)
+        if C.shape != (len(resid), len(resid)):
+            raise ValueError(f"GW covariance shape mismatch: {C.shape} vs {len(resid)}")
         invC = np.linalg.inv(C)
         chi2 = float(resid @ invC @ resid)
     else:
         chi2 = float(np.sum((resid / np.clip(dL_gw_err_Mpc, 1e-12, None))**2))
     return chi2
 
-# ---------- BAO helpers ----------
 def load_model_csv(path):
     df = pd.read_csv(path)
     for col in ["z", "H_over_H0", "dL"]:
@@ -106,15 +129,18 @@ def load_model_csv(path):
 
 def model_bao_at_z(zq, z_mod, H_over_H0, dL_dimless, H0phys, rd):
     """
-    Liefert (DM_over_rd, DH_over_rd, DV_over_rd) beim Ziel-z=zq.
+    Returns (DM/rd, DH/rd, DV/rd) at z=zq.
+    dL_dimless is d_L in (c/H0) units; H0phys in km/s/Mpc; rd in Mpc.
     """
+    if not np.isfinite(rd) or rd <= 0:
+        raise ValueError(f"Invalid r_d in BAO projection: {rd}")
     Hn     = np.interp(zq, z_mod, H_over_H0)
     dL_dim = np.interp(zq, z_mod, dL_dimless)
 
-    dL_Mpc = dL_dim * (C_KMS / H0phys)         # d_L in Mpc
-    DM_Mpc = dL_Mpc / (1.0 + zq)               # D_M = dL/(1+z)
-    H_km   = Hn * H0phys                       # H(z) in km/s/Mpc
-    DH_Mpc = C_KMS / H_km                      # D_H = c/H(z) in Mpc
+    dL_Mpc = dL_dim * (C_KMS / H0phys)
+    DM_Mpc = dL_Mpc / (1.0 + zq)
+    H_km   = Hn * H0phys
+    DH_Mpc = C_KMS / np.clip(H_km, 1e-30, None)
     DV_Mpc = (zq * DM_Mpc**2 * DH_Mpc) ** (1.0/3.0)
 
     return DM_Mpc/rd, DH_Mpc/rd, DV_Mpc/rd
@@ -133,20 +159,20 @@ def chi2_bao(bao_csv, model_df, H0phys, rd, cov_path=None, export_vector=None):
             ("DH_over_rd", DHm, "DH_over_rd", "DH_err"),
             ("DV_over_rd", DVm, "DV_over_rd", "DV_err"),
         ]:
-            if dcol in bao.columns and ecol in bao.columns and pd.notna(r.get(dcol)) and pd.notna(r.get(ecol)):
-                rows.append(dict(z=z, obs=name, data=float(r[dcol]), err=float(r[ecol]), model=float(mval)))
+            dval = r.get(dcol, np.nan)
+            eval_ = r.get(ecol, np.nan)
+            if pd.notna(dval) and pd.notna(eval_):
+                rows.append(dict(z=z, obs=name, data=float(dval), err=float(eval_), model=float(mval)))
     df = pd.DataFrame(rows)
     if len(df) == 0:
         return 0.0, 0, df
 
-    data  = df["data"].values
-    model = df["model"].values
-    resid = data - model
+    resid = df["data"].values - df["model"].values
 
     if cov_path:
         C = np.load(cov_path)
         if C.shape != (len(df), len(df)):
-            raise ValueError(f"BAO covariance shape {C.shape} does not match vector length {len(df)}")
+            raise ValueError(f"BAO covariance shape {C.shape} vs vector length {len(df)}")
         invC = np.linalg.inv(C)
         chi2 = float(resid @ invC @ resid)
     else:
@@ -165,22 +191,19 @@ def build_bao_dataframe_for_residuals(bao_csv_df, model_df, H0phys, rd):
     for _, r in bao_csv_df.iterrows():
         z = float(r["z"])
         DMm, DHm, DVm = model_bao_at_z(z, z_mod, Hn, dLdim, H0phys, rd)
-
         for name, mval, dcol, ecol in [
             ("DM_over_rd", DMm, "DM_over_rd", "DM_err"),
             ("DH_over_rd", DHm, "DH_over_rd", "DH_err"),
             ("DV_over_rd", DVm, "DV_over_rd", "DV_err"),
         ]:
-            dval  = r.get(dcol, np.nan)
+            dval = r.get(dcol, np.nan)
             eval_ = r.get(ecol, np.nan)
             if pd.notna(dval) and pd.notna(eval_):
-                dval  = float(dval); eval_ = float(eval_)
-                resid = dval - float(mval)
-                pull  = resid / eval_ if eval_ > 0 else np.nan
+                resid = float(dval) - float(mval)
+                pull  = resid / float(eval_) if float(eval_) > 0 else np.nan
                 rows.append(dict(
                     tracer=r.get("tracer",""),
-                    z=z, obs=name,
-                    data=dval, err=eval_,
+                    z=z, obs=name, data=float(dval), err=float(eval_),
                     model=float(mval), resid=resid, pull=pull
                 ))
     return pd.DataFrame(rows)
@@ -234,18 +257,12 @@ def main():
     ap.add_argument("--snia-cov", default="", help="optional SNIa covariance .npy")
     ap.add_argument("--gw-csv", default="")
     ap.add_argument("--gw-cov", default="", help="optional GW covariance .npy")
+
     ap.add_argument("--cmb-rd", type=float, default=None, help="mean of r_d prior [Mpc]")
     ap.add_argument("--cmb-rd-sigma", type=float, default=None, help="sigma of r_d prior [Mpc]")
+
     ap.add_argument("--H0phys", type=float, required=True, help="physical H0 [km/s/Mpc]")
     ap.add_argument("--rd", type=float, required=True, help="sound horizon r_d [Mpc] used in BAO compression")
-    ap.add_argument("--out", default="runs/joint_out")
-    ap.add_argument("--save-json", action="store_true")
-    ap.add_argument("--plot-resids", action="store_true", help="plot BAO residuals")
-    ap.add_argument("--n-params", type=int, default=5, help="Number of free model parameters for reduced chi^2")
-
-    # SN robust errors
-    ap.add_argument("--snia-sigma-int", type=float, default=0.0, help="intrinsische SN-Streuung in mag (additiv)")
-    ap.add_argument("--snia-vpec",      type=float, default=0.0, help="Peculiar-velocity Streuung in km/s (additiv)")
 
     # r_d backend (fixed vs. CAMB)
     ap.add_argument("--rd-backend", choices=["fixed", "camb"], default="fixed",
@@ -256,7 +273,7 @@ def main():
     ap.add_argument("--Yp",    type=float, default=0.245,  help="Primordial helium fraction")
     ap.add_argument("--mnu-eV", type=float, default=0.06,  help="Total neutrino mass [eV]")
 
-    # Neues Matching-Feature
+    # Option: keep H0*rd constant via rescaling of H0phys
     ap.add_argument("--match-H0rd", action="store_true",
                     help="Rescale H0phys to keep H0*rd constant w.r.t. a reference pair")
     ap.add_argument("--ref-H0", type=float, default=67.36,
@@ -264,32 +281,67 @@ def main():
     ap.add_argument("--ref-rd", type=float, default=150.754,
                     help="Reference r_d [Mpc] for H0*rd matching (default: DESI 150.754)")
 
+    ap.add_argument("--out", default="runs/joint_out")
+    ap.add_argument("--save-json", action="store_true")
+    ap.add_argument("--plot-resids", action="store_true", help="plot BAO residuals")
+    ap.add_argument("--n-params", type=int, default=5,
+                    help="Number of free model parameters for reduced chi^2")
+
+    # SN robust errors
+    ap.add_argument("--snia-sigma-int", type=float, default=0.0, help="intrinsic SN scatter in mag (added in quadrature)")
+    ap.add_argument("--snia-vpec",      type=float, default=0.0, help="peculiar-velocity scatter in km/s (adds to mag error)")
+
     args = ap.parse_args()
 
-    # --- Effective H0 scaling to keep H0*rd constant (optional) ---
-    H0phys_eff = args.H0phys
-    rd_used = args.rd
+    # --- determine r_d to use (fixed or CAMB) ---
+    if args.rd_backend == "camb":
+        if rd_camb is None or EarlyParams is None:
+            raise RuntimeError("CAMB backend requested but rd_engine not available/importable.")
+        ep = EarlyParams(
+            H0=args.H0phys,
+            ombh2=args.ombh2,
+            omch2=args.omch2,
+            Neff=args.Neff,
+            Yp=args.Yp,
+            mnu_eV=args.mnu_eV
+        )
+        rd_used = float(rd_camb(ep))
+        print(f"→ Using r_d = {rd_used:.3f} Mpc  [camb]")
+    else:
+        rd_used = float(args.rd)
+        print(f"→ Using r_d = {rd_used:.3f} Mpc  [fixed]")
 
-    if args.match_H0rd and rd_used and rd_used > 0:
-        scale = args.ref_rd / rd_used
+    # --- optional: rescale H0 to keep H0*rd ≈ const w.r.t. (ref_H0, ref_rd) ---
+    H0phys_eff = float(args.H0phys)
+    if args.match_H0rd:
+        if not np.isfinite(rd_used) or rd_used <= 0:
+            raise ValueError("match-H0rd requested but r_d is not positive.")
+        scale = (args.ref_H0 * args.ref_rd) / (args.H0phys * rd_used)
         H0phys_eff = args.H0phys * scale
         print(f"→ match-H0rd: using H0_eff = {H0phys_eff:.3f} km/s/Mpc "
               f"(scale={scale:.5f}) to keep H0*rd ≈ const vs. "
-              f"(H0_ref={args.ref_H0:.2f}, rd_ref={args.ref_rd:.3f})")
+              f"(H0_ref={args.ref_H0}, rd_ref={args.ref_rd})")
     else:
         print(f"→ no match-H0rd: using H0phys = {H0phys_eff:.3f} km/s/Mpc")
 
-    # --- ab hier alles mit H0phys_eff weiterverwenden ---
+    if not np.isfinite(rd_used) or rd_used <= 0:
+        raise ValueError(f"Invalid r_d: {rd_used}. Provide --rd > 0 or use --rd-backend camb.")
+
+    # Load model AFTER effective H0/rd are decided (for clarity)
     model = load_model_csv(args.model_csv)
 
     report = {}
 
+    # BAO
     bao_export = {}
-    chi2_b, n_b, bao_df = chi2_bao(args.bao_csv, model, H0phys_eff, args.rd,
-                                   cov_path=(args.cov or None), export_vector=bao_export)
+    chi2_b, n_b, bao_df = chi2_bao(
+        args.bao_csv, model, H0phys_eff, rd_used,
+        cov_path=(args.cov or None), export_vector=bao_export
+    )
     report["chi2_bao"] = chi2_b
     report["N_bao"] = n_b
 
+    # SN Ia
     chi2_sn, n_sn = 0.0, 0
     sn_Mstar = None
     if args.snia_csv:
@@ -307,6 +359,7 @@ def main():
     if sn_Mstar is not None:
         report["SN_Mstar_profiled_mag"] = sn_Mstar
 
+    # GW bright sirens
     chi2_gw_val, n_gw = 0.0, 0
     if args.gw_csv:
         gw = load_bright_sirens(args.gw_csv)
@@ -319,40 +372,66 @@ def main():
     report["chi2_gw"] = chi2_gw_val
     report["N_gw"] = n_gw
 
+    # CMB r_d prior
     chi2_cmb = 0.0
     if args.cmb_rd is not None and args.cmb_rd_sigma is not None:
-        chi2_cmb = chi2_rd_prior(args.rd, args.cmb_rd, args.cmb_rd_sigma)
+        chi2_cmb = chi2_rd_prior(rd_used, args.cmb_rd, args.cmb_rd_sigma)
     report["chi2_cmb_prior"] = chi2_cmb
 
+    # Totals & reduced chi^2
     chi2_tot = chi2_b + chi2_sn + chi2_gw_val + chi2_cmb
     N_tot = n_b + n_sn + n_gw + (1 if (args.cmb_rd is not None and args.cmb_rd_sigma is not None) else 0)
-
-    nuisance = 1 if args.snia_csv else 0
-    red_chi2 = chi2_tot / max(N_tot - args.n_params - nuisance, 1)
+    nuisance = 1 if args.snia_csv else 0  # profiled 𝓜
+    dof = max(N_tot - args.n_params - nuisance, 1)
+    red_chi2 = chi2_tot / dof
 
     report["chi2_total"] = chi2_tot
     report["N_total"] = N_tot
     report["reduced_chi2"] = red_chi2
+    report["dof"] = dof
     report["H0phys_input"] = args.H0phys
     report["H0phys_eff"] = H0phys_eff
-    report["rd_used"] = args.rd
-    report["match_H0rd"] = bool(args.match_H0rd)
-    report["ref_H0"] = args.ref_H0
-    report["ref_rd"] = args.ref_rd
+    report["rd_used"] = rd_used
+    report["inputs"] = {
+        "model_csv": args.model_csv,
+        "bao_csv": args.bao_csv,
+        "bao_cov": (args.cov or None),
+        "snia_csv": (args.snia_csv or None),
+        "snia_cov": (args.snia_cov or None),
+        "gw_csv": (args.gw_csv or None),
+        "gw_cov": (args.gw_cov or None),
+        "cmb_rd": (args.cmb_rd if args.cmb_rd is not None else None),
+        "cmb_rd_sigma": (args.cmb_rd_sigma if args.cmb_rd_sigma is not None else None),
+        "rd_backend": args.rd_backend,
+        "ombh2": args.ombh2,
+        "omch2": args.omch2,
+        "Neff": args.Neff,
+        "Yp": args.Yp,
+        "mnu_eV": args.mnu_eV,
+        "match_H0rd": bool(args.match_H0rd),
+        "ref_H0": args.ref_H0,
+        "ref_rd": args.ref_rd,
+        "n_params": args.n_params,
+        "snia_sigma_int": args.snia_sigma_int,
+        "snia_vpec": args.snia_vpec,
+    }
 
-    print(f"χ² components → BAO: {chi2_b:.3f} (N={n_b}) | SN: {chi2_sn:.3f} (N={n_sn}) | GW: {chi2_gw_val:.3f} (N={n_gw}) | CMB r_d: {chi2_cmb:.3f}")
-    print(f"χ² total = {chi2_tot:.3f}   (N={N_tot}, reduced χ² = {red_chi2:.3f})")
+    print(f"χ² components → BAO: {chi2_b:.3f} (N={n_b}) | SN: {chi2_sn:.3f} (N={n_sn}) | "
+          f"GW: {chi2_gw_val:.3f} (N={n_gw}) | CMB r_d: {chi2_cmb:.3f}")
+    print(f"χ² total = {chi2_tot:.3f}   (N={N_tot}, dof={dof}, reduced χ² = {red_chi2:.3f})")
 
+    # Save JSON
     if args.save_json:
         out_json = Path(f"{args.out}.json")
-        payload = {"report": report, "bao_vector": bao_export.get("bao_vector", [])}
+        payload = {"report": report, "bao_vector": (bao_export.get("bao_vector", []))}
         out_json.parent.mkdir(parents=True, exist_ok=True)
         with open(out_json, "w") as f:
             json.dump(payload, f, indent=2)
         print(f"→ JSON saved: {out_json}")
 
+    # Optional BAO residual plots
     if args.plot_resids:
-        bao_long = build_bao_dataframe_for_residuals(pd.read_csv(args.bao_csv), model, H0phys_eff, args.rd)
+        bao_long = build_bao_dataframe_for_residuals(pd.read_csv(args.bao_csv), model, H0phys_eff, rd_used)
         plot_bao_with_residuals(bao_long, args.out, title_suffix="(Joint Fit)")
 
 if __name__ == "__main__":
