@@ -1,0 +1,5 @@
+# Put official DESI DR2 BAO FITS URLs here, one per line, no quotes.
+# Example placeholders (these 404 by design – replace them!):
+https://data.desi.lbl.gov/public/BAO/DR2/BAO_all_catalogs_v1.fits
+https://data.desi.lbl.gov/public/BAO/DR2/BAO_results_v1.fits
+https://data.desi.lbl.gov/public/BAO/DR2/BAO_covariance_v1.fits

@@ -12,6 +12,14 @@ Time variable: N = ln(a), integrated from N_start to N_end
 import argparse, json, numpy as np, matplotlib.pyplot as plt
 from pathlib import Path
 from analysis.desi_bestfit import load_desi_bestfit_minimum
+
+#CAMB r_d Helpers
+try:
+    from analysis.rd_engine import EarlyParams, rd_camb
+    HAVE_RD_ENGINE = True
+except Exception:
+    HAVE_RD_ENGINE = False
+
 # ---------- Astropy Cosmology (optional) ----------
 USE_ASTROPY = True
 try:
@@ -152,7 +160,15 @@ def main():
         "--desi-bestfit",
         default="",
         help="Relative path to DESI iminuit bestfit.minimum(.txt), e.g. data/desi_dr2/iminuit/base/desi-bao-all/bestfit.minimum"
-    )
+    )    # --- r_d Backend / Early-Universe params ---
+    ap.add_argument("--rd-backend", choices=["fixed", "camb"], default="fixed",
+                    help="Use fixed r_d (DESI/default) or compute r_d with CAMB")
+    ap.add_argument("--ombh2", type=float, default=0.02237, help="physical Ω_b h^2 for CAMB")
+    ap.add_argument("--omch2", type=float, default=0.1200, help="physical Ω_c h^2 for CAMB")
+    ap.add_argument("--Neff",  type=float, default=3.046,   help="effective number of neutrinos")
+    ap.add_argument("--Yp",    type=float, default=0.245,   help="primordial helium mass fraction")
+    ap.add_argument("--mnu-eV", type=float, default=0.06,   help="∑m_ν in eV (minimal mass)")
+
     
     args = ap.parse_args()
     np.random.seed(args.seed)
@@ -201,6 +217,37 @@ def main():
         P["Omega_m"] = bf["Omega_m"]
         args.H0phys  = bf["H0"]  # physikalisches H0 (km/s/Mpc)
         print(f"[DESI] Using Ωm={P['Omega_m']:.6f}, H0={args.H0phys:.3f} km/s/Mpc, r_d={bf['rdrag']:.3f} Mpc")
+    # ---- r_d Auswahl: fixed (DESI/Default) oder CAMB ----
+    rd_source = "fixed"
+    rd_value = None
+
+    # 1) 
+    if args.rd_backend == "camb":
+        if not HAVE_RD_ENGINE:
+            print("! rd_backend=camb gewählt, aber analysis.rd_engine nicht verfügbar. Fallback auf fixed r_d.")
+        else:
+            ep = EarlyParams(
+                H0=args.H0phys,
+                ombh2=args.ombh2,
+                omch2=args.omch2,
+                Neff=args.Neff,
+                Yp=args.Yp,
+                mnu_eV=args.mnu_eV
+            )
+            try:
+                rd_value = float(rd_camb(ep))
+                rd_source = "camb"
+            except Exception as e:
+                print(f"! CAMB r_d Berechnung fehlgeschlagen ({e}). Fallback auf fixed r_d.")
+
+    # 2) Fixed r_d:
+    if rd_value is None:
+        if args.desi_bestfit:
+            rd_value = float(bf["rdrag"])
+        else:
+            rd_value = 150.754  #  Default (DESI-near)
+
+    print(f"→ Using r_d = {rd_value:.3f} Mpc  [{rd_source}]")
 
     # ---- DESI bestfit loader (inline fallback) ----
     def load_desi_bestfit(path):
