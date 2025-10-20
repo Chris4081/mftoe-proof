@@ -258,11 +258,15 @@ def main():
     ap.add_argument("--gw-csv", default="")
     ap.add_argument("--gw-cov", default="", help="optional GW covariance .npy")
 
+    # CMB r_d prior (optional)
     ap.add_argument("--cmb-rd", type=float, default=None, help="mean of r_d prior [Mpc]")
     ap.add_argument("--cmb-rd-sigma", type=float, default=None, help="sigma of r_d prior [Mpc]")
+    ap.add_argument("--no-cmb-prior", action="store_true",
+                    help="Disable CMB r_d Gaussian prior entirely")
 
     ap.add_argument("--H0phys", type=float, required=True, help="physical H0 [km/s/Mpc]")
-    ap.add_argument("--rd", type=float, required=True, help="sound horizon r_d [Mpc] used in BAO compression")
+    ap.add_argument("--rd", type=float, default=None,
+                    help="sound horizon r_d [Mpc] for BAO compression (required if --rd-backend=fixed)")
 
     # r_d backend (fixed vs. CAMB)
     ap.add_argument("--rd-backend", choices=["fixed", "camb"], default="fixed",
@@ -308,6 +312,8 @@ def main():
         rd_used = float(rd_camb(ep))
         print(f"→ Using r_d = {rd_used:.3f} Mpc  [camb]")
     else:
+        if args.rd is None:
+            raise ValueError("Provide --rd when using --rd-backend fixed.")
         rd_used = float(args.rd)
         print(f"→ Using r_d = {rd_used:.3f} Mpc  [fixed]")
 
@@ -346,13 +352,16 @@ def main():
     sn_Mstar = None
     if args.snia_csv:
         sn = load_snia_csv(args.snia_csv)
-        chi2_sn, sn_Mstar, sn_err_eff = chi2_snia_profileM(
+        result = chi2_snia_profileM(
             sn["z"].values, sn["mu"].values, sn["mu_err"].values,
             model["z"].values, model["dL"].values, H0phys_eff,
             cov_path=(args.snia_cov or None),
             sigma_int=args.snia_sigma_int,
             vpec_kms=args.snia_vpec
         )
+        chi2_sn = result[0]
+        if len(result) > 1:
+            sn_Mstar = result[1]
         n_sn = len(sn)
     report["chi2_snia"] = chi2_sn
     report["N_snia"] = n_sn
@@ -374,13 +383,16 @@ def main():
 
     # CMB r_d prior
     chi2_cmb = 0.0
-    if args.cmb_rd is not None and args.cmb_rd_sigma is not None:
+    use_cmb_prior = (not args.no_cmb_prior) and \
+                    (args.cmb_rd is not None and args.cmb_rd_sigma is not None)
+    if use_cmb_prior:
         chi2_cmb = chi2_rd_prior(rd_used, args.cmb_rd, args.cmb_rd_sigma)
     report["chi2_cmb_prior"] = chi2_cmb
+    report["use_cmb_prior"] = bool(use_cmb_prior)
 
     # Totals & reduced chi^2
     chi2_tot = chi2_b + chi2_sn + chi2_gw_val + chi2_cmb
-    N_tot = n_b + n_sn + n_gw + (1 if (args.cmb_rd is not None and args.cmb_rd_sigma is not None) else 0)
+    N_tot = n_b + n_sn + n_gw + (1 if use_cmb_prior else 0)
     nuisance = 1 if args.snia_csv else 0  # profiled 𝓜
     dof = max(N_tot - args.n_params - nuisance, 1)
     red_chi2 = chi2_tot / dof
@@ -414,10 +426,17 @@ def main():
         "n_params": args.n_params,
         "snia_sigma_int": args.snia_sigma_int,
         "snia_vpec": args.snia_vpec,
+        "no_cmb_prior": bool(args.no_cmb_prior),
     }
 
-    print(f"χ² components → BAO: {chi2_b:.3f} (N={n_b}) | SN: {chi2_sn:.3f} (N={n_sn}) | "
-          f"GW: {chi2_gw_val:.3f} (N={n_gw}) | CMB r_d: {chi2_cmb:.3f}")
+    _parts = [
+        f"BAO: {chi2_b:.3f} (N={n_b})",
+        f"SN: {chi2_sn:.3f} (N={n_sn})",
+        f"GW: {chi2_gw_val:.3f} (N={n_gw})",
+    ]
+    if use_cmb_prior:
+        _parts.append(f"CMB r_d: {chi2_cmb:.3f}")
+    print("χ² components → " + " | ".join(_parts))
     print(f"χ² total = {chi2_tot:.3f}   (N={N_tot}, dof={dof}, reduced χ² = {red_chi2:.3f})")
 
     # Save JSON
