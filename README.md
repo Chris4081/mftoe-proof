@@ -18,9 +18,75 @@ tested directly against **Dark Energy Spectroscopic Instrument (DESI) DR2 (2025)
 The project provides a **fully reproducible pipeline**, from toy model integration to  
 BAO comparison and covariance analysis, designed for scientific collaboration and open validation.
 
+# 🌌 **MFToE Proof v1.2.0 — CAMB Integration & Interactive GUI**
+
+### 🚀 Overview  
+This release marks a major usability and reproducibility step for the **Maat Field Theory of Everything (MFToE)** proof-of-concept.  
+Version **1.2.0** introduces the **CAMB Boltzmann backend**, a refined **joint-fit consistency model**, and a brand-new **interactive GUI** for streamlined simulation control.
+
 ---
 
-## 🚀 Recent Updates (v1.1.0)
+## 🧩 New Features & Enhancements
+
+### 🧠 1. MFToE Proof GUI v2 — Interactive Cockpit  
+**File:** `mftoe_gui.py`  
+
+A lightweight Tkinter interface providing one-click access to all core MFToE workflows:
+
+| Tab | Purpose |
+|:--|:--|
+| **Info** | License info + links to `docs/mftoe.pdf` and `docs/mftoe_proof.pdf` |
+| **Scan Relaxion** | Runs `scripts/scan_relaxion.sh` and produces Δχ² heatmaps |
+| **Run Relaxion** | Single run with RG + noise and optional JSON parameters |
+| **Run Baselines** | Executes `scripts/run_baselines.sh` |
+| **BAO Quickcheck** | GUI form for `analysis/bao_compare.py` to check χ² fits |
+| **Cov Sweep** | Runs `scripts/cov_sweep.sh` for synthetic ρ-sweeps |
+| **Run All** | Sequential execution of baseline → scan → covariance tests |
+
+All paths are **relative**, logs stream live into the console.  
+Run directly from the repo root:  
+```bash
+python3 mftoe_gui.py
+```
+### 🔭 2. CAMB Integration for rₑₛ Calculation  
+- New flag `--rd-backend {fixed,camb}` for `mftoe_vacuum_astropy.py` and `analysis/joint_fit.py`  
+- Computes the sound horizon r_d via the **CAMB Boltzmann code**  
+- Fully parameterized: `ombh2`, `omch2`, `Neff`, `Yp`, `mnu-eV`  
+- Matches Planck 2018 priors (`r_d ≈ 147.10 Mpc`)  
+- Updated requirements to include `camb`, `sympy`, `mpmath`
+
+---
+
+### ⚙️ 3. Joint-Fit Module Upgrades  
+- Added `--match-H0rd`, `--ref-H0`, `--ref-rd` for H₀·r_d consistency  
+- Automatic H₀ scaling to match DESI/CAMB priors  
+- Robust path imports + JSON outputs in `runs/joint_*.json`  
+- Residual plots generated automatically  
+
+| Model | r_d [Mpc] | χ² (BAO + CMB r_d) | Reduced χ² |
+|:--|:--:|:--:|:--:|
+| Baseline (DESI) | 150.754 | 16.12 | 1.08 |
+| CAMB | 147.10 | 16.13 | 1.08 |
+| CAMB + H₀·r_d match | — | 16.12 | 1.07 |
+
+---
+
+### 📈 4. Relaxion Scan & Visualization  
+- Updated `scripts/scan_relaxion.sh` to produce clean summary CSV `runs/scan_relaxion_summary.csv`  
+- Improved `analysis/plot_scan.py` with English labels and Δχ² contours (1σ/2σ/3σ)  
+- Trend plots and heatmaps saved automatically  
+
+---
+
+### 🧮 5. Code Stability & Usability  
+- Safer imports for analysis modules (relative execution fixed)  
+- Auto-create `runs/` if missing  
+- Clearer CLI help texts and error messages  
+- Live streaming of stdout + stderr in GUI console  
+
+---
+
+## 🚀  Update (v1.1.0)
 
 **Technical Enhancements**
 - Added full **Joint-Fit framework** combining BAO + SNIa + GW + CMB prior.  
