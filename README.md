@@ -18,11 +18,11 @@ tested directly against **Dark Energy Spectroscopic Instrument (DESI) DR2 (2025)
 The project provides a **fully reproducible pipeline**, from toy model integration to  
 BAO comparison and covariance analysis, designed for scientific collaboration and open validation.
 
-# 🌌 **MFToE Proof v1.2.1 — CAMB Integration & Interactive GUI**
+# 🌌 **MFToE Proof v1.2.2 — CAMB Integration & Interactive GUI**
 
 ### 🚀 Overview  
 This release marks a major usability and reproducibility step for the **Maat Field Theory of Everything (MFToE)** proof-of-concept.  
-Version **1.2.1** introduces the **CAMB Boltzmann backend**, a refined **joint-fit consistency model**, and a brand-new **interactive GUI** for streamlined simulation control.
+Version **1.2.2** introduces the **CAMB Boltzmann backend**, a refined **joint-fit consistency model**, and a brand-new **interactive GUI** for streamlined simulation control.
 
 ---
 
@@ -189,6 +189,17 @@ bash scripts/run_baselines.sh
 ```bash
 pip install -r requirements.txt
 ```
+
+## 🧰 macOS Execution Notice
+
+On macOS, shell scripts (`.sh`) are **not executable by default** after cloning from GitHub.  
+Before running any MFToE workflow scripts (e.g. `scan_relaxion.sh`, `run_baselines.sh`, `cov_sweep.sh`),  
+you must grant execution permissions once:
+
+```bash
+chmod +x scripts/*.sh
+```
+
 
 ### Run baseline test
 ```bash
