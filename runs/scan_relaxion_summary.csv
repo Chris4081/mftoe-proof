@@ -1,7 +1,0 @@
-tag,gamma,sigma,chi2_total,reduced_chi2,N_total,chi2_bao,chi2_sn,chi2_gw,chi2_cmb,H0_eff,rd_used
-relaxion_g0.05_s1e-5,0.05,1e-5,inf,inf,26,inf,15.379,0.000,252472.751,67.360000,0.000000
-relaxion_g0.05_s1e-4,0.05,1e-4,inf,inf,26,inf,15.379,0.000,252472.751,67.360000,0.000000
-relaxion_g0.10_s1e-5,0.10,1e-5,inf,inf,26,inf,15.286,0.000,252472.751,67.360000,0.000000
-relaxion_g0.10_s1e-4,0.10,1e-4,inf,inf,26,inf,15.286,0.000,252472.751,67.360000,0.000000
-relaxion_g0.20_s1e-5,0.20,1e-5,inf,inf,26,inf,15.105,0.000,252472.751,67.360000,0.000000
-relaxion_g0.20_s1e-4,0.20,1e-4,inf,inf,26,inf,15.105,0.000,252472.751,67.360000,0.000000
