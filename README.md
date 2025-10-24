@@ -302,5 +302,21 @@ bridging science, ethics, and technology into a unified exploration of cosmology
 
 ---
 
+## ⚖️ Legal Notice / Imprint
+
+**Author:** Christof Krieg  
+**Affiliation:** Independent Researcher, Wertheim, Germany  
+**Project:** MAAT Research Initiative — The Maat Field Theory of Everything (MFToE)  
+**Contact:** christof.krieg@outlook.com  
+**Academia:** [https://kriegchristof.academia.edu/research](https://kriegchristof.academia.edu/research)  
+**GitHub:** [https://github.com/Chris4081](https://github.com/Chris4081)  
+**YouTube:** [@maatki](https://www.youtube.com/@maatki)  
+
+All documents, theories, and media are protected under international copyright law and are listed in the  
+[Urheberarchiv (German Author Registry)](https://www.urheberarchiv.de/).  
+Software components are licensed under their respective open-source licenses (see `LICENSE` file in each repository).  
+
+
+
 **© 2025 Christof Krieg — MFToE Research Initiative**  
 Licensed under **AGPL-3.0** | DESI data © DESI Collaboration (2025) CC BY 4.0  
