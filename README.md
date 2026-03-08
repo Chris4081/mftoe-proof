@@ -18,11 +18,11 @@ tested directly against **Dark Energy Spectroscopic Instrument (DESI) DR2 (2025)
 The project provides a **fully reproducible pipeline**, from toy model integration to  
 BAO comparison and covariance analysis, designed for scientific collaboration and open validation.
 
-# 🌌 **MFToE Proof v1.2.2 — CAMB Integration & Interactive GUI**
+# 🌌 **MFToE Proof v1.2.1 — CAMB Integration & Interactive GUI**
 
 ### 🚀 Overview  
 This release marks a major usability and reproducibility step for the **Maat Field Theory of Everything (MFToE)** proof-of-concept.  
-Version **1.2.2** introduces the **CAMB Boltzmann backend**, a refined **joint-fit consistency model**, and a brand-new **interactive GUI** for streamlined simulation control.
+Version **1.2.1** introduces the **CAMB Boltzmann backend**, a refined **joint-fit consistency model**, and a brand-new **interactive GUI** for streamlined simulation control.
 
 ---
 
@@ -190,17 +190,6 @@ bash scripts/run_baselines.sh
 pip install -r requirements.txt
 ```
 
-## 🧰 macOS Execution Notice
-
-On macOS, shell scripts (`.sh`) are **not executable by default** after cloning from GitHub.  
-Before running any MFToE workflow scripts (e.g. `scan_relaxion.sh`, `run_baselines.sh`, `cov_sweep.sh`),  
-you must grant execution permissions once:
-
-```bash
-chmod +x scripts/*.sh
-```
-
-
 ### Run baseline test
 ```bash
 bash scripts/run_baselines.sh
@@ -301,22 +290,6 @@ This work aligns with the **Maat Principles** of
 bridging science, ethics, and technology into a unified exploration of cosmology and consciousness.
 
 ---
-
-## ⚖️ Legal Notice / Imprint
-
-**Author:** Christof Krieg  
-**Affiliation:** Independent Researcher, Wertheim, Germany  
-**Project:** MAAT Research Initiative — The Maat Field Theory of Everything (MFToE)  
-**Contact:** christof.krieg@outlook.com  
-**Academia:** [https://kriegchristof.academia.edu/research](https://kriegchristof.academia.edu/research)  
-**GitHub:** [https://github.com/Chris4081](https://github.com/Chris4081)  
-**YouTube:** [@maatki](https://www.youtube.com/@maatki)  
-
-All documents, theories, and media are protected under international copyright law and are listed in the  
-[Urheberarchiv (German Author Registry)](https://www.urheberarchiv.de/).  
-Software components are licensed under their respective open-source licenses (see `LICENSE` file in each repository).  
-
-
 
 **© 2025 Christof Krieg — MFToE Research Initiative**  
 Licensed under **AGPL-3.0** | DESI data © DESI Collaboration (2025) CC BY 4.0  
