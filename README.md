@@ -18,6 +18,17 @@ tested directly against **Dark Energy Spectroscopic Instrument (DESI) DR2 (2025)
 The project provides a **fully reproducible pipeline**, from toy model integration to  
 BAO comparison and covariance analysis, designed for scientific collaboration and open validation.
 
+
+## Update Current Cosmology Tests
+
+The MFToE baseline model has been compared to:
+
+• SN Ia (Pantheon+)
+• DESI DR2 BAO
+• Structure Growth fσ8(z)
+
+
+
 # 🌌 **MFToE Proof v1.2.1 — CAMB Integration & Interactive GUI**
 
 ### 🚀 Overview  
