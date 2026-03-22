@@ -4,7 +4,8 @@
 **License:** GNU Affero General Public License v3.0 (AGPL-3.0) <br>
 **Data License:** DESI Collaboration © 2025, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) <br>
 **Repository Type:** Research / Reproducible Cosmology Pipeline <br>
-**Last Updated:** October 2025  
+**DOI:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17383354.svg)](https://doi.org/10.5281/zenodo.17383354) <br>
+**Last Updated:** March 2026
 
 ---
 
@@ -18,26 +19,21 @@ tested directly against **Dark Energy Spectroscopic Instrument (DESI) DR2 (2025)
 The project provides a **fully reproducible pipeline**, from toy model integration to  
 BAO comparison and covariance analysis, designed for scientific collaboration and open validation.
 
+---
 
-## Update Current Cosmology Tests
+## 📊 Current Cosmology Tests
 
 The MFToE baseline model has been compared to:
 
-• SN Ia (Pantheon+)
-• DESI DR2 BAO
-• Structure Growth fσ8(z)
-
-
-
-# 🌌 **MFToE Proof v1.2.1 — CAMB Integration & Interactive GUI**
-
-### 🚀 Overview  
-This release marks a major usability and reproducibility step for the **Maat Field Theory of Everything (MFToE)** proof-of-concept.  
-Version **1.2.1** introduces the **CAMB Boltzmann backend**, a refined **joint-fit consistency model**, and a brand-new **interactive GUI** for streamlined simulation control.
+| Dataset | Status | Result |
+|:--------|:------:|:-------|
+| DESI DR2 BAO | ✅ active | χ² = 16.1, reduced χ² = 0.85 |
+| SN Ia (Pantheon+) | ⚙️ synthetic | framework compatible |
+| Structure Growth fσ₈(z) | ⚙️ planned | — |
 
 ---
 
-## 🧩 New Features & Enhancements
+## 🔬 New in v1.2.1 — CAMB Integration & Interactive GUI
 
 ### 🧠 1. MFToE Proof GUI v2 — Interactive Cockpit  
 **File:** `mftoe_gui.py`  
@@ -54,25 +50,15 @@ A lightweight Tkinter interface providing one-click access to all core MFToE wor
 | **Cov Sweep** | Runs `scripts/cov_sweep.sh` for synthetic ρ-sweeps |
 | **Run All** | Sequential execution of baseline → scan → covariance tests |
 
-All paths are **relative**, logs stream live into the console.  
-Run directly from the repo root:  
 ```bash
 python3 mftoe_gui.py
 ```
-### 🔭 2. CAMB Integration for rₑₛ Calculation  
-- New flag `--rd-backend {fixed,camb}` for `mftoe_vacuum_astropy.py` and `analysis/joint_fit.py`  
-- Computes the sound horizon r_d via the **CAMB Boltzmann code**  
-- Fully parameterized: `ombh2`, `omch2`, `Neff`, `Yp`, `mnu-eV`  
-- Matches Planck 2018 priors (`r_d ≈ 147.10 Mpc`)  
-- Updated requirements to include `camb`, `sympy`, `mpmath`
 
----
+### 🔭 2. CAMB Integration for r_d Calculation
 
-### ⚙️ 3. Joint-Fit Module Upgrades  
-- Added `--match-H0rd`, `--ref-H0`, `--ref-rd` for H₀·r_d consistency  
-- Automatic H₀ scaling to match DESI/CAMB priors  
-- Robust path imports + JSON outputs in `runs/joint_*.json`  
-- Residual plots generated automatically  
+- New flag `--rd-backend {fixed,camb}` for `mftoe_vacuum_astropy.py` and `analysis/joint_fit.py`
+- Computes the sound horizon r_d via the **CAMB Boltzmann code**
+- Matches Planck 2018 priors (`r_d ≈ 147.10 Mpc`)
 
 | Model | r_d [Mpc] | χ² (BAO + CMB r_d) | Reduced χ² |
 |:--|:--:|:--:|:--:|
@@ -80,49 +66,49 @@ python3 mftoe_gui.py
 | CAMB | 147.10 | 16.13 | 1.08 |
 | CAMB + H₀·r_d match | — | 16.12 | 1.07 |
 
----
+### ⚙️ 3. Joint-Fit Module Upgrades
 
-### 📈 4. Relaxion Scan & Visualization  
-- Updated `scripts/scan_relaxion.sh` to produce clean summary CSV `runs/scan_relaxion_summary.csv`  
-- Improved `analysis/plot_scan.py` with English labels and Δχ² contours (1σ/2σ/3σ)  
-- Trend plots and heatmaps saved automatically  
-
----
-
-### 🧮 5. Code Stability & Usability  
-- Safer imports for analysis modules (relative execution fixed)  
-- Auto-create `runs/` if missing  
-- Clearer CLI help texts and error messages  
-- Live streaming of stdout + stderr in GUI console  
+- Added `--match-H0rd`, `--ref-H0`, `--ref-rd` for H₀·r_d consistency
+- Automatic H₀ scaling to match DESI/CAMB priors
+- JSON outputs in `runs/joint_*.json` + automatic residual plots
 
 ---
 
-## 🚀  Update (v1.1.0)
+## 🆕 New Tests (2026)
 
-**Technical Enhancements**
-- Added full **Joint-Fit framework** combining BAO + SNIa + GW + CMB prior.  
-- Implemented parameters `--n-params`, `--snia-sigma-int`, and `--snia-vpec` for robust error modeling.  
-- Introduced **automatic residual plotting** via `--plot-resids`.  
-- Added **automated relaxion scan** (`scripts/scan_relaxion.sh`) producing both JSON and CSV outputs.  
-- Updated CLI argument structure for modular pipeline use.  
+### MFToE Phase Analysis — Quartic Toy Model
 
-**Scientific Results**
-- Joint fit (BAO + SNIa + CMB):  
-  - χ² = **31.60**, reduced χ² = **1.58** (Pantheon+ ready).  
-- Relaxion scan:  
-  - χ² minimum at **γ ≈ 0.05**, **σ ≈ 1e-5**.  
-  - Mean total equation of state **w_tot ≈ −0.29**.  
-- Sub-percent deviations from ΛCDM across 0 < z < 3.  
-- All fits consistent with **DESI DR2 (2025)** BAO data within 1 σ.  
+A separate numerical analysis pipeline (`mftoe_phase_v2.py`) implements a
+minimal phenomenological quartic free-energy model for structural selection:
 
-**Project & Licensing**
-- Added `CITATION.cff` with DOI, metadata, and author information.  
-- Integrated **Zenodo DOI:** [10.5281/zenodo.17383354](https://doi.org/10.5281/zenodo.17383354)  
-- Expanded README and LaTeX documentation with explicit **DESI CC BY 4.0 license notice**.  
-- Official **GitHub Release v1.1.0** published (October 2025).  
+```
+F_red(λ, η; m, u, v) = −λ(m² + u²) + η·v² + m⁴ + u⁴ + v⁴
+```
+
+**Key results:**
+- Exact analytic phase boundary: `η_c(λ) = 0` (independent of λ)
+- Two-sector structure: aligned (`v ≈ 0` for η ≥ 0) and frustrated (`|v| > 0` for η < 0)
+- Symmetry reduction v → |v| eliminates artificial branch doubling
+- Local boundary scan: λ ∈ [0.5, 2.0], η ∈ [−0.5, 0.1] at fine resolution
+- Polynomial fit of phase boundary: `η_c(λ) ≈ a₀ + a₁λ + a₂λ²`
+- Numerical pipeline: multi-start root finding, branch tracking, phase diagram
+
+**Companion paper:**  
+*A Minimal State–Structure Model for Dynamical Structural Selection* (Krieg, 2026)
+
+### Boundary Scan & Phase Diagram
+
+`mftoe_phase_v2.py` implements a full 5-step pipeline:
+
+1. **Branch Tracking** — multi-start root finding with symmetry reduction
+2. **Transition Analysis** — switch-filter for real vs. numerical transitions
+3. **Phase Diagram** — 4-class classification (aligned/frustrated × single/multi)
+4. **Boundary Fit** — `η_c(λ)` extracted by linear interpolation + polynomial fit
+5. **Overlay** — phase diagram with fitted boundary curve
+
+All plots automatically exported to `mftoe_output/`.
 
 ---
-
 
 ## 📜 Scientific Abstract
 
@@ -132,14 +118,22 @@ We integrate the late-time background from z = 3 → 0 using RK4 and compare the
 H(z), d_L(z), and D_M/r_d, D_H/r_d, D_V/r_d against **DESI DR2 BAO** measurements.
 
 **Results:**  
-- Deviations from ΛCDM below **0.7 %** in both H(z) and d_L(z).  
-- χ² = 16.1 (reduced χ² = 0.85) for the baseline model.  
-- χ² = 19.2 (reduced χ² = 1.0) for the dynamic relaxion + RG + noise run.  
-- Excellent agreement with **DESI DR2 (2025)** compressed BAO data.  
-- Covariance sweeps confirm stability for ρ ∈ [0.0, 0.5].  
+- Deviations from ΛCDM below **0.7%** in both H(z) and d_L(z)
+- χ² = 16.1 (reduced χ² = 0.85) for the baseline model
+- χ² = 19.2 (reduced χ² = 1.0) for the dynamic relaxion + RG + noise run
+- Excellent agreement with **DESI DR2 (2025)** compressed BAO data
+- Covariance sweeps confirm stability for ρ ∈ [0.0, 0.5]
 
-This demonstrates that the **MFToE vacuum mechanism** can reproduce late-time expansion data  
-while allowing mild dynamical dark-energy evolution — a strong empirical foundation for further exploration.
+---
+
+## 🔬 Key Results (DESI DR2 2025)
+
+| Model | Mode | RG | Noise | χ² | χ²_red | w_tot | Comment |
+|:------|:-----|:--:|:-----:|:---:|:-------:|:------:|:--------|
+| MFToE Baseline | targetH0 | off | off | 16.12 | 0.85 | −0.282 | Excellent fit |
+| MFToE Relaxion | relaxion | on  | on  | 19.17 | 1.01 | −0.289 | Mild DE evolution |
+| Covariance ρ = 0.3 | baseline | on | off | 17.79 | 0.94 | — | Stable |
+| CAMB + H₀·r_d | joint | off | off | 16.12 | 1.07 | — | CAMB backend |
 
 ---
 
@@ -147,9 +141,12 @@ while allowing mild dynamical dark-energy evolution — a strong empirical found
 
 ```
 MFToE-Proof/
-├── mftoe_vacuum_astropy.py
+├── mftoe_vacuum_astropy.py       # Main cosmology simulation
+├── mftoe_gui.py                  # Interactive GUI (v2)
+├── mftoe_phase_v2.py             # Phase analysis pipeline (2026)
 ├── analysis/
 │   ├── bao_compare.py
+│   ├── joint_fit.py
 │   ├── make_cov_from_csv.py
 │   └── compare_runs.py
 ├── data/
@@ -157,14 +154,16 @@ MFToE-Proof/
 │       ├── bao_summary.csv
 │       ├── bao_cov.npy
 │       └── iminuit/base/desi-bao-all/bestfit.minimum
+├── mftoe_output/                 # Phase analysis plots (auto-generated)
 ├── runs/
 ├── scripts/
 │   ├── run_baselines.sh
 │   ├── cov_sweep.sh
 │   └── scan_relaxion.sh
 ├── docs/
-│   └── mftoe_proof.pdf
+│   ├── mftoe_proof.pdf
 │   └── mftoe.pdf
+├── DATA_LICENSES.md              # Full data license documentation
 ├── LICENSE
 └── README.md
 ```
@@ -174,30 +173,15 @@ MFToE-Proof/
 ## ⚙️ Installation & Setup
 
 ### Prerequisites
-- Python ≥ 3.10  
-- Packages: numpy, pandas, matplotlib, astropy
+- Python ≥ 3.10
+- Packages: `numpy`, `pandas`, `matplotlib`, `astropy`, `scipy`
+- Optional: `camb`, `sympy`, `mpmath`
 
-##  📥 Cloning the Repository
-
-📥 **Clone and Run**
-
-To get started:
-
-```git clone https://github.com/Chris4081/mftoe-proof.git  
-cd mftoe-proof
-
-Create a virtual environment (recommended):
-
-python3 -m venv .venv  
-source .venv/bin/activate  
-pip install -r requirements.txt
-
-Run the baseline simulation:
-
-bash scripts/run_baselines.sh
-```
-### Install dependencies
 ```bash
+git clone https://github.com/Chris4081/mftoe-proof.git
+cd mftoe-proof
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -216,100 +200,97 @@ bash scripts/scan_relaxion.sh
 bash scripts/cov_sweep.sh
 ```
 
-
-
----
-
-## 🔬 Key Results (DESI DR2 2025)
-
-| Model | Mode | RG | Noise | χ² | χ²_red | w_tot | Comment |
-|:------|:-----|:--:|:-----:|:---:|:-------:|:------:|:--------|
-| MFToE Baseline | targetH0 | off | off | 16.12 | 0.85 | -0.282 | Excellent fit |
-| MFToE Relaxion | relaxion | on  | on  | 19.17 | 1.01 | -0.289 | Mild DE evolution |
-| Covariance ρ = 0.3 | baseline | on | off | 17.79 | 0.94 | — | Stable with correlation |
+### Run phase analysis (new)
+```bash
+python3 mftoe_phase_v2.py
+```
 
 ---
 
 ## 📄 Data & Licensing
 
-This project uses publicly available cosmological datasets.
+This project uses publicly available cosmological datasets.  
+See [`DATA_LICENSES.md`](DATA_LICENSES.md) for full details.
 
-### DESI DR2 (2025)
-- Source: https://data.desi.lbl.gov/doc/releases/
-- DOI: https://doi.org/10.5281/zenodo.11019438
-- License: CC BY 4.0  
-- © DESI Collaboration
+### DESI Data Release 2 (DR2)
+- **Source:** https://data.desi.lbl.gov/doc/releases/
+- **DOI:** https://doi.org/10.5281/zenodo.11019438
+- **License:** CC BY 4.0 — © DESI Collaboration
 
-Usage requires proper citation of DESI DR2.
-
----
+Usage requires citation of the DESI DR2 data release and the relevant cosmology papers (see below).
 
 ### Pantheon+ Supernova Dataset
-- Source: https://github.com/PantheonPlusSH0ES/DataRelease
-- License: CC BY 4.0  
-- Citation: Brout et al. (2022), ApJ 938, 110
+- **Source:** https://github.com/PantheonPlusSH0ES/DataRelease
+- **License:** Data release — citation required
 
-> Note: Pantheon+ is currently not used in the numerical pipeline.  
+> **Note:** Pantheon+ is currently not used in the numerical pipeline.  
 > A synthetic dataset is used instead. Integration is planned.
 
----
-
 ### Code License
-All code in this repository is licensed under:
-
-**GNU Affero General Public License v3.0 (AGPL-3.0)**
-
-
-## Data sources and licenses
-
-This repository uses publicly available data from:
-
-- **DESI Data Release 2 (DR2)** —  
-  Dark Energy Spectroscopic Instrument Collaboration (2024).  
-  DOI: [10.5281/zenodo.11019438](https://doi.org/10.5281/zenodo.11019438)  
-  Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-
-All DESI-based results in this repository acknowledge DESI DR2 as their source dataset.
-
-> **Note:**  
-> The current SNIa (supernova) component in the joint-fit pipeline uses a **synthetic dataset**
-> for testing purposes only.  
-> The framework is **fully compatible with future integration** of the real  
-> **Pantheon+ Supernova Sample (Brout et al. 2022, ApJ 938, 110)**  
-> once linked via the official [PantheonPlusSH0ES Data Release](https://github.com/PantheonPlusSH0ES/DataRelease).  
->  
-> Citation reference (if integrated in the future):  
-> Brout, D., Scolnic, D., Popovic, B., et al. (2022),  
-> *The Pantheon+ Analysis: Cosmological Constraints*,  
-> ApJ 938, 110.  
-> DOI: [10.3847/1538-4357/ac8e04](https://doi.org/10.3847/1538-4357/ac8e04)
+All code in this repository is licensed under **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
 ---
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17383354.svg)](https://doi.org/10.5281/zenodo.17383354)
 
 ## 🧭 Citation
 
 ```bibtex
-@misc{krieg2025_mftoe_proof,
-  author       = {Christof Krieg},
-  title        = {MFToE Proof — Dark Energy Reconstruction with DESI DR2 (2025)},
-  year         = {2025},
-  note         = {GitHub repository},
-  license      = {AGPL-3.0}
+@misc{krieg2026_mftoe_proof,
+  author  = {Christof Krieg},
+  title   = {MFToE Proof — Dark Energy Reconstruction with DESI DR2},
+  year    = {2026},
+  doi     = {10.5281/zenodo.17383354},
+  url     = {https://github.com/Chris4081/mftoe-proof},
+  license = {AGPL-3.0}
 }
 
-@dataset{desi2025_dr2,
-  author       = {DESI Collaboration},
-  title        = {Dark Energy Spectroscopic Instrument (DESI) Data Release 2},
-  year         = {2025},
-  note         = {https://data.desi.lbl.gov/doc/releases/},
-  license      = {CC BY 4.0}
+@article{DESI2025BAO,
+  author  = {{DESI Collaboration}},
+  title   = {{DESI DR2 Results II: Measurements of Baryon Acoustic Oscillations
+              and Cosmological Constraints}},
+  journal = {Phys. Rev. D},
+  volume  = {112},
+  pages   = {083515},
+  year    = {2025},
+  doi     = {10.1103/tr6y-kpc6},
+  eprint  = {2503.14738}
+}
+
+@article{DESI2025Lya,
+  author  = {{DESI Collaboration}},
+  title   = {{DESI DR2 Results I: Baryon Acoustic Oscillations
+              from the Lyman Alpha Forest}},
+  journal = {Phys. Rev. D},
+  volume  = {112},
+  pages   = {083514},
+  year    = {2025},
+  doi     = {10.1103/PhysRevD.112.083514},
+  eprint  = {2503.14739}
+}
+
+@article{Brout2022,
+  author  = {Brout, D. and others},
+  title   = {{The Pantheon+ Analysis: Cosmological Constraints}},
+  journal = {Astrophys. J.},
+  volume  = {938},
+  pages   = {110},
+  year    = {2022},
+  doi     = {10.3847/1538-4357/ac8e04},
+  eprint  = {2202.04077}
+}
+
+@article{Scolnic2022,
+  author  = {Scolnic, D. and others},
+  title   = {{The Pantheon+ Analysis: The Full Data Set and Light-curve Release}},
+  journal = {Astrophys. J.},
+  volume  = {938},
+  pages   = {113},
+  year    = {2022},
+  doi     = {10.3847/1538-4357/ac8b7a},
+  eprint  = {2112.03863}
 }
 ```
 
 ---
-
-
 
 ## 🧠 Philosophy
 
@@ -319,5 +300,5 @@ bridging science, ethics, and technology into a unified exploration of cosmology
 
 ---
 
-**© 2025 Christof Krieg — MFToE Research Initiative**  
-Licensed under **AGPL-3.0** | DESI data © DESI Collaboration (2025) CC BY 4.0  
+**© 2026 Christof Krieg — MFToE Research Initiative**  
+Licensed under **AGPL-3.0** | DESI data © DESI Collaboration (2025) CC BY 4.0
