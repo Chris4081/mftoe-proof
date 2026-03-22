@@ -243,6 +243,17 @@ Usage requires citation and acknowledgment per DESI Data Release documentation:
 All scripts and models in this repository are distributed under the  
 **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
+
+This project uses publicly available cosmological datasets:
+
+- Pantheon+ Supernova dataset  
+  Source: https://github.com/xxx/pantheon-plus  
+  License: CC BY 4.0  
+  Citation: Scolnic et al. (2022)
+
+All data remain property of the original authors.
+
+
 ## Data sources and licenses
 
 This repository uses publicly available data from:
