@@ -232,26 +232,32 @@ bash scripts/cov_sweep.sh
 
 ## 📄 Data & Licensing
 
-DESI DR2 (2025) data used under the  
-[Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).  
-Usage requires citation and acknowledgment per DESI Data Release documentation:  
-👉 [https://data.desi.lbl.gov/doc/releases/](https://data.desi.lbl.gov/doc/releases/)
+This project uses publicly available cosmological datasets.
 
-© DESI Collaboration, 2025.
+### DESI DR2 (2025)
+- Source: https://data.desi.lbl.gov/doc/releases/
+- DOI: https://doi.org/10.5281/zenodo.11019438
+- License: CC BY 4.0  
+- © DESI Collaboration
 
-**Code License:**  
-All scripts and models in this repository are distributed under the  
-**GNU Affero General Public License v3.0 (AGPL-3.0)**.
+Usage requires proper citation of DESI DR2.
 
+---
 
-This project uses publicly available cosmological datasets:
+### Pantheon+ Supernova Dataset
+- Source: https://github.com/PantheonPlusSH0ES/DataRelease
+- License: CC BY 4.0  
+- Citation: Brout et al. (2022), ApJ 938, 110
 
-- Pantheon+ Supernova dataset  
-  Source: https://github.com/xxx/pantheon-plus  
-  License: CC BY 4.0  
-  Citation: Scolnic et al. (2022)
+> Note: Pantheon+ is currently not used in the numerical pipeline.  
+> A synthetic dataset is used instead. Integration is planned.
 
-All data remain property of the original authors.
+---
+
+### Code License
+All code in this repository is licensed under:
+
+**GNU Affero General Public License v3.0 (AGPL-3.0)**
 
 
 ## Data sources and licenses
